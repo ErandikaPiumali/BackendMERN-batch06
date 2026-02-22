@@ -1,20 +1,26 @@
 import User from "../model/users.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import dotenv  from "dotenv";
+dotenv .config();
 
-export function createUser(req,res){
+
+   export function createUser(req,res){
+
+    const passwordHash = bcrypt.hashSync(req.body.password,10)//1-generate hash
 
   //  const user = new User(req.body) // created a user - object
   const userData={
     firstName:req.body.firstName,
-    lastName:rea.body.lastName,
+    lastName:req.body.lastName,
     email:req.body.email,
     password: passwordHash,
     phone: req.body.phone,
 
    
   }
- const passwordHash = bcrypt.hashSync(req.body.password,10)
-  const user=new User(userData) // create the object
+ 
+  const user=new User(userData) // create the new object
 
     user.save().then(
         ()=>{
@@ -33,12 +39,19 @@ export function createUser(req,res){
 }
 
 export function loginUser(req,res){
+    //safety check
+    if(!req.body){
+          return res.status(400).json({
+            message:"Request body is missing"
+        });
+    }
     const email=req.body.email
     const password=req.body.password
 
     User.findOne({
         email:email
-    }).then(
+    })
+    .then(
         (user)=>{
             if(user==null){
                 res.status(404).json({
@@ -46,21 +59,47 @@ export function loginUser(req,res){
                 });
                 return;
             }else{
-                const isPasswordCorrect = bcrypt.compareSync(password,user.password)
+                const isPasswordCorrect = bcrypt.compareSync(password,user.password);
+
                 if (isPasswordCorrect){
-                    res.json({
-                        message:"Login Successful"
-                    })
-                }else{
-                    res.status(403).json({
-                        message:"Incorrect password"
-                    })
-                }
-            }
-
-            console.log(user)
-            //console.log(User)- this print the whole schema
-        }
-    )
-
+                     const token = jwt.sign( // create the token
+    {
+        email:user.email,//user information/payload
+        firstName:user.firstName,
+        lastName:user.lastName,
+        role:user.role,
+        isBlocked:user.isBlocked,
+        isemailVerified:user.isemailVerified,
+        image:user.image
+        
+    }, process.env.JWT_SECRET//key
+);
+ res.json({
+        token:token,
+        message:"Login successful"
+    })
 }
+else{ 
+    res.status(403).json({
+        message:"Incorrect Password"
+    })
+}
+
+          //  console.log(user)
+            //console.log(User)- this print the whole schema
+}
+}
+    )
+}
+
+export function isAdmin(req){
+    if(req.user==null){
+        return false;
+    }
+    if(req.user.role =="admin"){
+        return true;
+    }else{
+        return false;
+    }
+}
+
