@@ -1,8 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
-//import Student from "./model/student.js";
-//import studentRouter from "./Router/studentRouter.js";
+
 import userRouter from "./Router/userRouter.js";
 import dotenv from "dotenv"
 import jwt from "jsonwebtoken";
@@ -47,16 +46,15 @@ app.use(
       )
 
    }else{
-  // console.log(token);
-   // console.log(value);
+  
     next()
 }
 })
 
 //3-set up routes
-//app.use ("/students",studentRouter);
-app.use("/users",userRouter);
-app.use("/products",productRouter);
+
+app.use("/api/users",userRouter);
+app.use("/api/products",productRouter);
 
 
 
