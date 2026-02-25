@@ -1,11 +1,12 @@
 import express from "express";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
-import Student from "./model/student.js";
-import studentRouter from "./Router/studentRouter.js";
+//import Student from "./model/student.js";
+//import studentRouter from "./Router/studentRouter.js";
 import userRouter from "./Router/userRouter.js";
 import dotenv from "dotenv"
 import jwt from "jsonwebtoken";
+import productRouter from "./Router/productRouter.js";
 
 dotenv.config() // load env variables to the package
 
@@ -53,8 +54,9 @@ app.use(
 })
 
 //3-set up routes
-app.use ("/students",studentRouter);
+//app.use ("/students",studentRouter);
 app.use("/users",userRouter);
+app.use("/products",productRouter);
 
 
 
