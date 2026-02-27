@@ -5,6 +5,7 @@ import dotenv  from "dotenv";
 dotenv .config();
 
 
+
    export function createUser(req,res){
 
     const passwordHash = bcrypt.hashSync(req.body.password,10)//1-generate hash
@@ -76,7 +77,8 @@ export function loginUser(req,res){
 );
  res.json({
         token:token,
-        message:"Login successful"
+        message:"Login successful",
+        role:user.role
     })
 }
 else{ 

@@ -6,6 +6,7 @@ import userRouter from "./Router/userRouter.js";
 import dotenv from "dotenv"
 import jwt from "jsonwebtoken";
 import productRouter from "./Router/productRouter.js";
+import cors from "cors";
 
 dotenv.config() // load env variables to the package
 
@@ -15,6 +16,8 @@ const app=express();
 
 //1-set middleware
 app.use(bodyParser.json())
+
+app.use(cors())//accept any request coming from any origin
 
 //2-auth middleware
 app.use(
